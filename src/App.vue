@@ -20,18 +20,16 @@
       </template>
       <!-- <v-spacer></v-spacer> -->
     </v-app-bar>
-    <Products/>
+    <router-view> </router-view>
   </v-app>
 </template>
 
 <script>
-import Products from './components/Products'
+import router from './router/router';
 
 export default {
   name: 'App',
-  components:{
-    Products
-  },
+  router: router,
   data
 }
 const data = () =>{
