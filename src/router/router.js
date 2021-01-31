@@ -23,15 +23,15 @@ const router = new VueRouter({
       component: Products
     },
     { 
+      path: '/product/create',
+      name: 'NewProduct',
+      component: NewProduct
+    },
+    { 
       path: '/product/:id',
       name: 'Product',
       component: Product
     },
-    { 
-      path: '/product/create',
-      name: 'NewProduct',
-      component: NewProduct
-    }
   ] 
 });
 

@@ -8,19 +8,9 @@
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
       <v-toolbar-title>ShopOnline</v-toolbar-title>
-      <template v-slot:extension>
-        <v-tabs align-with-title>
-          <v-tab>Products</v-tab>
-          <v-tab>Suppliers</v-tab>
-          <v-tab>Users</v-tab>
-          <v-tab>
-            <a href="/product/create">New Product</a>
-          </v-tab>
-        </v-tabs>
-      </template>
       <!-- <v-spacer></v-spacer> -->
     </v-app-bar>
-    <router-view> </router-view>
+    <router-view></router-view>
   </v-app>
 </template>
 
@@ -38,8 +28,10 @@ const data = () =>{
 </script>
 
 <style scoped>
-  v-tab > a{
-    color: white;
-    text-decoration: none;
+  #app{
+    padding-top: 63px;
+  }
+  header{
+    max-height: 63px;
   }
 </style>
