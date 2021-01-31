@@ -12,7 +12,7 @@
         </v-radio-group>
 
         <router-link :to="{ name: 'NewProduct' }">
-          <v-btn class="mx-2" fab dark color="blue" v-model="clicked">
+          <v-btn class="mx-2" fab dark color="blue">
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
         </router-link>
@@ -46,46 +46,27 @@
 </template>
 
 <script>
-import router from "../router/router";
-
-const SERVER_URL = "http://localhost:8086/api/public/productlist";
+import router from "../router/router"
+import getAllProducts from "../services/getProductList";
 
 export default {
   name: "Products",
   data() {
     return {
       products: [],
-      creationDates: [],
       checkbox: false,
       radioOptions: ["ALL", "ACTIVE", "DISCOUNTED"],
-      radioGroup: 1
+      radioGroup: "ALL",
     };
   },
   router: router,
   created() {
     this.getProductList();
+    this.filterProducts();
   },
   methods: {
     getProductList() {
-      fetch(SERVER_URL)
-        .then((response) => {
-          return response.json();
-        })
-        .then((products) => {
-          this.products = products;
-          products.forEach((product) => {
-            const productDate = new Date(product.creationDate);
-            const year = productDate.getFullYear();
-            const month = (productDate.getMonth() + 1)
-              .toString()
-              .padStart(2, "0");
-            const day = productDate.getDay().toString().padStart(2, "0");
-
-            const resultDate = `${day}/${month}/${year}`;
-
-            product.creationDate = resultDate;
-          });
-        });
+      this.products = getAllProducts();
     },
     getProductById(idproduct) {
       router.push({ name: "Product", params: { id: idproduct } });
@@ -93,14 +74,9 @@ export default {
   },
   computed: {
     filterProducts() {
-      console.log(this.radioGroup);
-
-      if (this.radioGroup === 1 || this.radioGroup === "ALL")
-        return this.products;
-      else
-        return this.products.filter(
-          (product) => product.state === this.radioGroup
-        );
+      return (this.radioGroup === "ALL")
+        ? this.products
+        : this.products.filter( ({state}) => state === this.radioGroup );
     },
   },
 };
@@ -108,8 +84,7 @@ export default {
 
 <style scoped>
 .product-list {
-  margin: 5%;
-  padding: 10px;
+  margin: 0 5%;
   display: grid;
   grid-gap: 20px;
   grid-template-areas: "card card card";

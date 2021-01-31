@@ -22,7 +22,7 @@
 </template>
 <script>
 import router from '../router/router'
-import transformDateFormat from '../resources/changeDateFormat'
+import getProduct from '../services/getProduct'
 
 export default {
     name: 'Product',
@@ -35,18 +35,12 @@ export default {
         }
     },
     created(){
-        this.getProductById()
+        this.getProductById();
     },
     methods:{
         getProductById(){
-            fetch(`http://localhost:8086/api/public/product/${this.idproduct}`)
-            .then(response => {  return response.json() })
-            .then(product => {
-                this.product = product
-                this.product.creationDate = transformDateFormat(this.product.creationDate)
-                this.product.state === 'DISCONTINUED' ? this.checkbox = true : false;
-            })
-            .catch(err => { throw err })
+            this.product = getProduct(this.idproduct, this.checkbox);
+            this.checkbox = this.product.state === 'DISCONTINUED' ? true : false;
         },
         updateProductState(){
             if(this.checkbox) {
@@ -64,10 +58,10 @@ export default {
                 .then(() => { this.getProductList() })
                 .catch(err => { throw err })
                 
-                this.state = 'ACTIVE'
+                this.state = 'ACTIVE';
             } else {
-                this.product.state = 'ACTIVE'
-                this.state = 'DISCONTINUED'
+                this.product.state = 'ACTIVE';
+                this.state = 'DISCONTINUED';
             }
         }
     }
@@ -75,7 +69,7 @@ export default {
 </script>
 <style>
     .div-product-card{
-        margin: 5%;
+        margin: 0 5%;
         padding: 0;
     }
 </style>
