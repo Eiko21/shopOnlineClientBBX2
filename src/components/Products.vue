@@ -38,6 +38,7 @@
             >
               <v-btn text color="deep-blue accent-4">Show product</v-btn>
             </router-link>
+            <v-btn depressed color="error" @click="deleteProductOfTheList(product.idproduct)">Delete</v-btn>
           </v-card-actions>
         </v-card>
       </div>
@@ -47,7 +48,8 @@
 
 <script>
 import router from "../router/router"
-import getAllProducts from "../services/getProductList";
+import getAllProducts from "../services/getProductList"
+import deleteProduct from '../services/deleteProduct'
 
 export default {
   name: "Products",
@@ -62,7 +64,6 @@ export default {
   router: router,
   created() {
     this.getProductList();
-    this.filterProducts();
   },
   methods: {
     getProductList() {
@@ -71,14 +72,17 @@ export default {
     getProductById(idproduct) {
       router.push({ name: "Product", params: { id: idproduct } });
     },
+    deleteProductOfTheList(idproduct){
+      deleteProduct(idproduct);
+    }
   },
   computed: {
     filterProducts() {
-      return (this.radioGroup === "ALL")
-        ? this.products
-        : this.products.filter( ({state}) => state === this.radioGroup );
+      return (this.radioGroup !== "ALL")
+        ? this.products.filter( ({state}) => state === this.radioGroup )
+        : this.products;
     },
-  },
+  },  
 };
 </script>
 
