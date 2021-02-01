@@ -31,7 +31,7 @@ export default {
             product: {},
             idproduct: router.app.$route.params.id,
             checkbox: false,
-            state: 'DISCONTINUED'
+            state: 'DISCOUNTED'
         }
     },
     created(){
@@ -40,11 +40,11 @@ export default {
     methods:{
         getProductById(){
             this.product = getProduct(this.idproduct, this.checkbox);
-            this.checkbox = this.product.state === 'DISCONTINUED' ? true : false;
+            this.checkbox = this.product.state === 'DISCOUNTED' ? true : false;
         },
         updateProductState(){
             if(this.checkbox) {
-                this.product.state = 'DISCONTINUED'
+                this.product.state = 'DISCOUNTED'
                 fetch(`http://localhost:8086/api/public/product/${this.idproduct}/update`, {
                     method: 'PUT',
                     body: this.product,
@@ -61,7 +61,7 @@ export default {
                 this.state = 'ACTIVE';
             } else {
                 this.product.state = 'ACTIVE';
-                this.state = 'DISCONTINUED';
+                this.state = 'DISCOUNTED';
             }
         }
     }
