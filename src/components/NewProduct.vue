@@ -1,22 +1,141 @@
 <template>
-    <div>
-        <h1>NEW PRODUCT</h1>
+    <div id="form-create-div">
+        <form>
+            <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
+                @input="$v.code.$touch()"
+                @blur="$v.code.$touch()"
+            ></v-text-field>
+            <v-text-field v-model="description" :error-messages="descriptionErrors" :counter="100" label="Description" required
+                @input="$v.description.$touch()"
+                @blur="$v.description.$touch()"
+            ></v-text-field>
+            <v-text-field v-model="price" :error-messages="priceErrors" :counter="99999" label="Price" required
+                @input="$v.price.$touch()"
+                @blur="$v.price.$touch()"
+            ></v-text-field>
+            <v-text-field v-model="creationDate" label="Creation date" required readonly></v-text-field>
+            <v-select v-model="selectState" :items="states" :error-messages="selectStateErrors" label="State" item-text="statename" required
+                @change="$v.selectState.$touch()"
+                @blur="$v.selectState.$touch()"
+            ></v-select>
+            <v-select v-model="selectSupplier" :items="suppliers" :error-messages="selectSupplierErrors" label="Supplier" required
+                item-text="supplierName" item-value="idsupplier" 
+                @change="$v.selectSupplier.$touch()"
+                @blur="$v.selectSupplier.$touch()"
+            ></v-select>
+            <v-select v-model="selectPriceReduction" :items="priceReductions" label="Price reduction" required
+                item-text="discount" 
+                item-value="idpricereduction"
+                @change="$v.selectPriceReduction.$touch()"
+                @blur="$v.selectPriceReduction.$touch()"
+            >
+            </v-select>
+            <v-btn class="mr-4" @click="createProduct()">Create product</v-btn>
+            <v-btn @click="clear">Clear</v-btn>
+        </form>
     </div>
 </template>
 <script>
+import { validationMixin } from 'vuelidate'
+import { required, maxLength, minLength, decimal, numeric, minValue, maxValue } from 'vuelidate/lib/validators'
+import getAllSuppliers from '../services/getSuppliersList'
+import getAllPriceReductions from '../services/getPriceReductionList'
+import createProduct from '../services/createProduct'
+
 export default {
+    mixins: [validationMixin],
     name: 'NewProduct',
+    validations: {
+        code: { required, numeric, minLength: minLength(5) },
+        description: { required, maxLength: maxLength(100), minLength: minLength(20) },
+        price: { required, decimal, minValue: minValue(1), maxValue: maxValue(99999) },
+        creationDate: { required },
+        selectState: { required },
+        selectSupplier: { required },
+        selectPriceReduction: {}
+    },
     data(){
         return{
-
+            productCreated: [],
+            code: null,
+            description: '',
+            price: null,
+            creationDate: new Date().toISOString().slice(0,10),
+            states: ["ACTIVE", "DISCOUNTED"],
+            suppliers: [],
+            priceReductions: [],
+            selectState: null,
+            selectSupplier: null,
+            selectPriceReduction: null,
         }
+    },
+    created(){
+        this.suppliers = getAllSuppliers();
+        this.priceReductions = getAllPriceReductions();
     },
     methods:{
         createProduct(){
+            this.$v.$touch()
+            createProduct(this.code, this.description, this.price, this.selectState, this.selectSupplier, 
+                this.selectPriceReduction, this.creationDate);
+        },
+        clear(){
+            this.$v.$reset()
+            this.code = ''
+            this.description = ''
+            this.price = ''
+            this.selectState = null
+            this.selectSupplier = null
+            this.selectPriceReduction = null
         }
+    },
+    computed:{
+        selectStateErrors () {
+            const errors = []
+            if (!this.$v.selectState.$dirty) return errors
+            !this.$v.selectState.required && errors.push('State is required')
+            return errors
+        },
+        selectSupplierErrors () {
+            const errors = []
+            if (!this.$v.selectSupplier.$dirty) return errors
+            !this.$v.selectSupplier.required && errors.push('Supplier is required')
+            return errors
+        },
+        codeErrors () {
+            const errors = []
+            if (!this.$v.code.$dirty) return errors
+            !this.$v.code.numeric && errors.push('Code must be numeric')
+            !this.$v.code.minLength && errors.push('Code must be at most 5 digits long')
+            !this.$v.code.required && errors.push('Code is required.')
+            return errors
+        },
+        descriptionErrors () {
+            const errors = []
+            if (!this.$v.description.$dirty) return errors
+            !this.$v.description.minLength && errors.push('Description must be at least 20 characters long')
+            !this.$v.description.maxLength && errors.push('Description must be at most 100 characters long')
+            !this.$v.description.required && errors.push('Description is required.')
+            return errors
+        },
+        priceErrors () {
+            const errors = []
+            if (!this.$v.price.$dirty) return errors
+            !this.$v.price.minValue && errors.push('Price must be at least 1 digit long')
+            !this.$v.price.maxValue && errors.push('Price must be at most 99999 digits long')
+            !this.$v.price.required && errors.push('Price is required.')
+            return errors
+        },
     }
 }
 </script>
 <style scoped>
-    
+    #form-create-div{
+        margin: 0 5%;
+        padding: 3% 0;
+    }
+    form{
+        width: 60%;
+        margin: 0 auto;
+    }
 </style>

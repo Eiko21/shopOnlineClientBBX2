@@ -11,8 +11,8 @@ export default function getAllProducts(){
     .then((products) => {
         products.forEach((product) => {
             product.creationDate = transformDateFormat(product.creationDate);
+            productlist.push(product);
         });
-        productlist = products;
     });
     return productlist;
 }
