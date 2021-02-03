@@ -1,15 +1,18 @@
 import transformDateFormat from '../resources/changeDateFormat';
+import cloneDeep from 'lodash.clonedeep'
 
 const SERVER_URL = "http://localhost:8086/api/public/product/";
 let productResult = {};
 
 export default function getProduct(idproduct){
-    fetch(`${SERVER_URL}${idproduct}`)
-    .then(response => {  return response.json() })
+    return fetch(`${SERVER_URL}${idproduct}`)
+    .then(response => {  
+        return response.status == 200 ? response.json() : Promise.reject(response.status) 
+    })
     .then(product => {
         product.creationDate = transformDateFormat(product.creationDate)
-        productResult = product;
+        productResult = cloneDeep(product)
+        return productResult
     })
-    .catch(err => { throw err })
-    return productResult;
+    .catch( err => { throw err; })
 }
