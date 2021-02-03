@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Product from '../components/Product'
 import Products from '../components/Products'
 import NewProduct from '../components/NewProduct'
+import EditProduct from '../components/EditProduct'
 import App from '../App';
 
 Vue.use(VueRouter);
@@ -30,7 +31,12 @@ const router = new VueRouter({
     { 
       path: '/product/:id',
       name: 'Product',
-      component: Product
+      component: Product,
+    },
+    { 
+      path: '/product/edit/:id',
+      name: 'EditProduct',
+      component: EditProduct
     },
   ] 
 });

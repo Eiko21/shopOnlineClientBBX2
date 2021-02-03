@@ -1,12 +1,5 @@
 <template>
     <div class="div-product-card">
-        <v-container fluid>
-        <v-checkbox v-model="checkbox" @click="updateProductState()">
-          <template v-slot:label>
-            <div>Change product state as {{ state }}</div>
-          </template>
-        </v-checkbox>
-      </v-container>
         <v-card class="mx-auto" max-width="500">
             <v-card-text>
                 <p class="display-1 text--primary">
@@ -17,12 +10,20 @@
                 <p class="text--primary">Creation date: {{ product.creationDate }}</p>
                 <p class="text--primary">Created by: <b>{{ product && product.creator && product.creator.username }}</b></p>
             </v-card-text>
+            <v-card-actions>
+                <router-link :to="{ name: 'EditProduct', params: { id: idproduct } }">
+                    <v-btn class="mx-2" fab dark color="blue">
+                        <v-icon dark>mdi-pencil</v-icon>
+                    </v-btn>
+                </router-link>
+            </v-card-actions>
         </v-card>
     </div>
 </template>
 <script>
 import router from '../router/router'
 import getProduct from '../services/getProduct'
+import updateProductSelected from '../services/updateProduct'
 
 export default {
     name: 'Product',
@@ -31,38 +32,21 @@ export default {
             product: {},
             idproduct: router.app.$route.params.id,
             checkbox: false,
-            state: 'DISCOUNTED'
+            checkboxState: 'DISCOUNTED',
+            newState: 'DISCOUNTED'
         }
     },
+    router: router,
     created(){
         this.getProductById();
     },
     methods:{
         getProductById(){
-            this.product = getProduct(this.idproduct, this.checkbox);
+            getProduct(this.idproduct).then( res => this.product = res );
             this.checkbox = this.product.state === 'DISCOUNTED' ? true : false;
         },
-        updateProductState(){
-            if(this.checkbox) {
-                this.product.state = 'DISCOUNTED'
-                fetch(`http://localhost:8086/api/public/product/${this.idproduct}/update`, {
-                    method: 'PUT',
-                    body: this.product,
-                    headers:{
-                        "Access-Control-Allow-Origin": "*",
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    }
-                })
-                .then(response => { return response.json() })
-                .then(() => { this.getProductList() })
-                .catch(err => { throw err })
-                
-                this.state = 'ACTIVE';
-            } else {
-                this.product.state = 'ACTIVE';
-                this.state = 'DISCOUNTED';
-            }
+        updateStateProduct(){
+            this.product = updateProductSelected(this.product);
         }
     }
 }
