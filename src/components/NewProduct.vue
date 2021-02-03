@@ -1,6 +1,6 @@
 <template>
     <div id="form-create-div">
-        <form>
+        <form method="POST" enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
                 @blur="$v.code.$touch()"
@@ -43,11 +43,13 @@ export default {
     mixins: [validationMixin],
     name: 'NewProduct',
     validations: {
-        code: { required, numeric, minLength: minLength(5) },
-        description: { required, maxLength: maxLength(100), minLength: minLength(20) },
+        code: { required, numeric, minLength: minLength(4) },
+        description: { required, maxLength: maxLength(100), minLength: minLength(10) },
         price: { decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
+        selectSupplier: {},
+        selectPriceReduction: {}
     },
     data(){
         return{
