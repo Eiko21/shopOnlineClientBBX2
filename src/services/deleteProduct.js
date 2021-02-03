@@ -1,7 +1,7 @@
 import getAllProducts from "../services/getProductList"
 
 export default function deleteProduct(idproduct){
-    fetch(`http://localhost:8086/api/public/product/delete/${idproduct}`, {
+    return fetch(`http://localhost:8086/api/public/product/delete/${idproduct}`, {
         method: 'DELETE',
         mode: "cors",
         headers:{
@@ -10,8 +10,8 @@ export default function deleteProduct(idproduct){
         }
     })
     .then(response => { 
-        return response.ok ? response.json() : Promise.reject(response.status); 
+        return response.status == 200 ? response.text() : Promise.reject(response.status); 
     })
-    .then(() => getAllProducts() )
+    .then(() => { return getAllProducts() })
     .catch(err => { throw err })
 }
