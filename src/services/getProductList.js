@@ -5,9 +5,7 @@ let productlist = [];
 
 export default function getAllProducts(){
     fetch(SERVER_URL)
-    .then((response) => {
-        return response.json();
-    })
+    .then((response) => { return response.json(); })
     .then((products) => {
         products.forEach((product) => {
             product.creationDate = transformDateFormat(product.creationDate);

@@ -28,7 +28,9 @@ export default function createProduct(code, description, price, state, supplier,
             'Accept': 'application/json',
         }
     })
-    .then(response => {  return response.json() })
+    .then(response => {  
+        return response.status == 200 ? response.json() : Promise.reject(response.status) 
+    })
     .then(() => { getAllProducts() })
     .catch(err => { throw err })
 }

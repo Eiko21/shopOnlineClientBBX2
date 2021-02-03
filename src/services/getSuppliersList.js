@@ -3,9 +3,7 @@ let supplierlist = [];
 
 export default function getAllSuppliers(){
     fetch(SERVER_URL)
-    .then((response) => {
-        return response.json();
-    })
+    .then((response) => { return response.json(); })
     .then((suppliers) => {
         suppliers.forEach(supplier => { supplierlist.push(supplier) });
     });

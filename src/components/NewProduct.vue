@@ -9,7 +9,7 @@
                 @input="$v.description.$touch()"
                 @blur="$v.description.$touch()"
             ></v-text-field>
-            <v-text-field v-model="price" :error-messages="priceErrors" :counter="99999" label="Price" required
+            <v-text-field v-model="price" :error-messages="priceErrors" :counter="99999" label="Price"
                 @input="$v.price.$touch()"
                 @blur="$v.price.$touch()"
             ></v-text-field>
@@ -18,14 +18,11 @@
                 @change="$v.selectState.$touch()"
                 @blur="$v.selectState.$touch()"
             ></v-select>
-            <v-select v-model="selectSupplier" :items="suppliers" :error-messages="selectSupplierErrors" label="Supplier" required
-                item-text="supplierName" item-value="idsupplier" 
+            <v-select v-model="selectSupplier" :items="suppliers" label="Supplier" item-text="supplierName" item-value="idsupplier" 
                 @change="$v.selectSupplier.$touch()"
                 @blur="$v.selectSupplier.$touch()"
             ></v-select>
-            <v-select v-model="selectPriceReduction" :items="priceReductions" label="Price reduction" required
-                item-text="discount" 
-                item-value="idpricereduction"
+            <v-select v-model="selectPriceReduction" :items="priceReductions" label="Price reduction" item-text="discount" item-value="idpricereduction"
                 @change="$v.selectPriceReduction.$touch()"
                 @blur="$v.selectPriceReduction.$touch()"
             >
@@ -48,11 +45,9 @@ export default {
     validations: {
         code: { required, numeric, minLength: minLength(5) },
         description: { required, maxLength: maxLength(100), minLength: minLength(20) },
-        price: { required, decimal, minValue: minValue(1), maxValue: maxValue(99999) },
+        price: { decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
-        selectSupplier: { required },
-        selectPriceReduction: {}
     },
     data(){
         return{
@@ -64,7 +59,7 @@ export default {
             states: ["ACTIVE", "DISCOUNTED"],
             suppliers: [],
             priceReductions: [],
-            selectState: null,
+            selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
         }
@@ -96,18 +91,12 @@ export default {
             !this.$v.selectState.required && errors.push('State is required')
             return errors
         },
-        selectSupplierErrors () {
-            const errors = []
-            if (!this.$v.selectSupplier.$dirty) return errors
-            !this.$v.selectSupplier.required && errors.push('Supplier is required')
-            return errors
-        },
         codeErrors () {
             const errors = []
             if (!this.$v.code.$dirty) return errors
             !this.$v.code.numeric && errors.push('Code must be numeric')
             !this.$v.code.minLength && errors.push('Code must be at most 5 digits long')
-            !this.$v.code.required && errors.push('Code is required.')
+            !this.$v.code.required && errors.push('Code is required')
             return errors
         },
         descriptionErrors () {
@@ -115,15 +104,14 @@ export default {
             if (!this.$v.description.$dirty) return errors
             !this.$v.description.minLength && errors.push('Description must be at least 20 characters long')
             !this.$v.description.maxLength && errors.push('Description must be at most 100 characters long')
-            !this.$v.description.required && errors.push('Description is required.')
+            !this.$v.description.required && errors.push('Description is required')
             return errors
         },
         priceErrors () {
             const errors = []
             if (!this.$v.price.$dirty) return errors
-            !this.$v.price.minValue && errors.push('Price must be at least 1 digit long')
-            !this.$v.price.maxValue && errors.push('Price must be at most 99999 digits long')
-            !this.$v.price.required && errors.push('Price is required.')
+            !this.$v.price.minValue && errors.push('Price must be at least 0,1€')
+            !this.$v.price.maxValue && errors.push('Price must be at most 99999€')
             return errors
         },
     }
