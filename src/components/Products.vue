@@ -33,12 +33,12 @@
             </div>
           </v-card-text>
           <v-card-actions>
-            <router-link
-              :to="{ name: 'Product', params: { id: product.idproduct } }"
-            >
-              <v-btn text color="deep-blue accent-4">Show product</v-btn>
+            <router-link :to="{ name: 'Product', params: { id: product.idproduct } }">
+              <v-btn class="ma-2" text color="deep-gray accent-4">Show product</v-btn>
             </router-link>
-            <v-btn depressed color="error" @click="deleteProductOfTheList(product.idproduct)">Delete</v-btn>
+            <v-btn class="ma-2" color="red" dark @click="deleteProductOfTheList(product.idproduct)">Delete
+                <v-icon dark right>mdi-delete</v-icon>
+            </v-btn>
           </v-card-actions>
         </v-card>
       </div>
@@ -73,7 +73,9 @@ export default {
       router.push({ name: "Product", params: { id: idproduct } });
     },
     deleteProductOfTheList(idproduct){
-      deleteProduct(idproduct);
+      deleteProduct(idproduct)
+      .then(res => this.products = res)
+      .then(() => window.location.reload());
     }
   },
   computed: {
