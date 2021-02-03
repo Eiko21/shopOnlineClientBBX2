@@ -7,7 +7,9 @@
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>ShopOnline</v-toolbar-title>
+      <router-link :to="{ name: 'App' }">
+        <v-toolbar-title class="toolbar-title">ShopOnline</v-toolbar-title>
+      </router-link>
       <!-- <v-spacer></v-spacer> -->
     </v-app-bar>
     <router-view></router-view>
@@ -33,5 +35,8 @@ const data = () =>{
   }
   header{
     max-height: 63px;
+  }
+  .toolbar-title{
+    color: white;
   }
 </style>
