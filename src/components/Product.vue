@@ -53,7 +53,7 @@ export default {
 </script>
 <style>
     .div-product-card{
-        margin: 0 5%;
+        margin: 4% 5%;
         padding: 0;
     }
 </style>
