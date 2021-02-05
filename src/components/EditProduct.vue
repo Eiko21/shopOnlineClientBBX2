@@ -1,6 +1,7 @@
 <template>
     <div id="form-edit-div">
-        <form>
+        <v-alert type="info" v-if="!editable">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert>
+        <form v-else enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
                 @blur="$v.code.$touch()"
@@ -20,17 +21,16 @@
             ></v-select>
             <v-select v-model="selectSupplier" :items="suppliers" label="Supplier" item-text="supplierName" item-value="idsupplier" 
                 @change="$v.selectSupplier.$touch()"
-                
+                @blur="$v.selectSupplier.$touch()"
             ></v-select>
             <v-select v-model="selectPriceReduction" :items="priceReductions" label="Price reduction" item-text="discount" item-value="idpricereduction"
                 @change="$v.selectPriceReduction.$touch()"
+                @blur="$v.selectPriceReduction.$touch()"
             >
             </v-select>
             <v-text-field v-model="creator" label="Creator" required readonly></v-text-field>
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
         </form>
-        <!-- @blur="$v.selectSupplier.$touch()" -->
-         <!-- @blur="$v.selectPriceReduction.$touch()" -->
     </div>
 </template>
 <script>
@@ -52,6 +52,8 @@ export default {
         price: { decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
+        selectSupplier: {},
+        selectPriceReduction: {}
     },
     data() {
         return {
@@ -68,7 +70,8 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
-            creator: null
+            creator: null,
+            editable: true
         }
     },
     router: router,
@@ -82,6 +85,8 @@ export default {
             getProduct(this.idproduct)
             .then(res => this.product = cloneDeep(res) )
             .then( () => {
+                this.product.state === 'ACTIVE' ? this.editable = true : this.editable = false;
+
                 this.code = this.product.code
                 this.description = this.product.description;
                 this.price = this.product.price;
