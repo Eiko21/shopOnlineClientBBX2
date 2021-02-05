@@ -30,6 +30,7 @@
             <v-btn class="mr-4" @click="createProduct()">Create product</v-btn>
             <v-btn @click="clear">Clear</v-btn>
         </form>
+        <v-alert class="alert" type="success" v-if="created">The product has been created <b>SUCCESSFULLY</b></v-alert>
     </div>
 </template>
 <script>
@@ -64,6 +65,7 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
+            created: false
         }
     },
     created(){
@@ -74,7 +76,7 @@ export default {
         createProduct(){
             this.$v.$touch();
             createProduct(this.code, this.description, this.price, this.selectState, this.selectSupplier, 
-                this.selectPriceReduction, this.creationDate);
+                this.selectPriceReduction, this.creationDate).then(res => this.created = res);
         },
         clear(){
             this.$v.$reset();
@@ -127,5 +129,10 @@ export default {
     form{
         width: 60%;
         margin: 0 auto;
+    }
+
+    .alert{
+        margin: 5% auto;
+        width: 50%;
     }
 </style>

@@ -1,4 +1,3 @@
-import getAllProducts from "../services/getProductList"
 import getPriceReduction from '../services/getPriceReduction'
 import getSupplier from '../services/getSupplier'
 
@@ -35,7 +34,7 @@ export default function createProduct(code, description, price, state, supplier_
     .then(response => {  
         return response.status == 200 ? response.json() : Promise.reject(response.status) 
     })
-    .then(() => { return getAllProducts() })
+    .then(() => { return true })
     .catch(err => { throw err })
 }
 
