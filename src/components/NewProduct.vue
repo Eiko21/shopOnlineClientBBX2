@@ -72,49 +72,49 @@ export default {
     },
     methods:{
         createProduct(){
-            this.$v.$touch()
+            this.$v.$touch();
             createProduct(this.code, this.description, this.price, this.selectState, this.selectSupplier, 
                 this.selectPriceReduction, this.creationDate);
         },
         clear(){
-            this.$v.$reset()
-            this.code = ''
-            this.description = ''
-            this.price = ''
-            this.selectState = null
-            this.selectSupplier = null
-            this.selectPriceReduction = null
+            this.$v.$reset();
+            this.code = '';
+            this.description = '';
+            this.price = '';
+            this.selectState = null;
+            this.selectSupplier = null;
+            this.selectPriceReduction = null;
         }
     },
     computed:{
         selectStateErrors () {
-            const errors = []
-            if (!this.$v.selectState.$dirty) return errors
-            !this.$v.selectState.required && errors.push('State is required')
-            return errors
+            const errors = [];
+            if (!this.$v.selectState.$dirty) return errors;
+            !this.$v.selectState.required && errors.push('State is required');
+            return errors;
         },
         codeErrors () {
-            const errors = []
-            if (!this.$v.code.$dirty) return errors
-            !this.$v.code.numeric && errors.push('Code must be numeric')
-            !this.$v.code.minLength && errors.push('Code must be at most 5 digits long')
-            !this.$v.code.required && errors.push('Code is required')
-            return errors
+            const errors = [];
+            if (!this.$v.code.$dirty) return errors;
+            !this.$v.code.numeric && errors.push('Code must be numeric');
+            !this.$v.code.minLength && errors.push('Code must be at most 5 digits long');
+            !this.$v.code.required && errors.push('Code is required');
+            return errors;
         },
         descriptionErrors () {
-            const errors = []
-            if (!this.$v.description.$dirty) return errors
-            !this.$v.description.minLength && errors.push('Description must be at least 20 characters long')
-            !this.$v.description.maxLength && errors.push('Description must be at most 100 characters long')
-            !this.$v.description.required && errors.push('Description is required')
-            return errors
+            const errors = [];
+            if (!this.$v.description.$dirty) return errors;
+            !this.$v.description.minLength && errors.push('Description must be at least 20 characters long');
+            !this.$v.description.maxLength && errors.push('Description must be at most 100 characters long');
+            !this.$v.description.required && errors.push('Description is required');
+            return errors;
         },
         priceErrors () {
-            const errors = []
-            if (!this.$v.price.$dirty) return errors
-            !this.$v.price.minValue && errors.push('Price must be at least 0,1€')
-            !this.$v.price.maxValue && errors.push('Price must be at most 99999€')
-            return errors
+            const errors = [];
+            if (!this.$v.price.$dirty) return errors;
+            !this.$v.price.minValue && errors.push('Price must be at least 0,1€');
+            !this.$v.price.maxValue && errors.push('Price must be at most 99999€');
+            return errors;
         },
     }
 }

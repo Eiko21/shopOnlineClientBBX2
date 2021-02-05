@@ -8,8 +8,8 @@ export default function getSupplier(idSupplier){
     .then(response => {  
         return response.status == 200 ? response.json() : Promise.reject(response.status);
     })
-    .then(priceReductionResult => {
-        supplier = cloneDeep(priceReductionResult);
+    .then(supplierResult => {
+        supplier = cloneDeep(supplierResult);
         return supplier;
     })
     .catch( err => { throw err; })
