@@ -1,14 +1,12 @@
 import getProduct from '../services/getProduct'
 
 export default function updateProductSelected(idproduct, productUpdated){
-    return fetch(`http://localhost:8086/api/public/product/update/${idproduct}`, {
+    return fetch(`http://localhost:8086/api/products/${idproduct}/edit`, {
         method: 'PUT',
-        body: productUpdated,
         headers:{
-            "Access-Control-Allow-Origin": "*",
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
+        },
+        body: JSON.stringify(productUpdated),
     })
     .then(response => { 
         return response.status == 200 ? response.json() : Promise.reject(response.status) 
