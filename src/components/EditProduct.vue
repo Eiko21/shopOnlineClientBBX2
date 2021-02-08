@@ -28,7 +28,7 @@
                 @blur="$v.selectPriceReduction.$touch()"
             >
             </v-select>
-            <v-text-field v-model="creator" label="Creator" required readonly></v-text-field>
+            <!-- <v-text-field v-model="creator" label="Creator" required readonly></v-text-field> -->
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
         </form>
     </div>
@@ -58,7 +58,6 @@ export default {
     data() {
         return {
             product: {},
-            productUpdated: {},
             idproduct: router.app.$route.params.id,
             code: null,
             description: '',
@@ -70,7 +69,7 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
-            creator: null,
+            // creator: null,
             editable: true
         }
     },
@@ -91,25 +90,16 @@ export default {
                 this.description = this.product.description;
                 this.price = this.product.price;
                 this.selectState = this.product.state;
-                this.selectSupplier = this.product.suppliers;
-                this.selectPriceReduction = this.product.priceReductions;
+                this.selectSupplier = this.product.suppliers == null ? {} : this.product.suppliers;
+                this.selectPriceReduction = this.product.priceReductions == null ? {} : this.product.priceReductions;
                 this.creationDate = this.product.creationDate;
-                this.creator = this.product.creator.username;
             });
         },
         updateProduct(){
             this.$v.$touch()
-            this.productUpdated = {
-                code: this.code,
-                description: this.description,
-                price: this.price,
-                state: this.selectState,
-                supplier: this.selectSupplier,
-                priceReduction: this.selectPriceReduction,
-                creationDate: this.creationDate,
-                creator: this.product.creator
-            }
-            updateProductSelected(this.idproduct, this.productUpdated).then(res => console.log(res));
+            updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
+                this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator)
+            .then(res => this.product = cloneDeep(res));
         }
     },
     computed:{
