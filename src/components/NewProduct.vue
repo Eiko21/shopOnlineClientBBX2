@@ -45,7 +45,7 @@ export default {
     name: 'NewProduct',
     validations: {
         code: { required, numeric, minLength: minLength(4) },
-        description: { required, maxLength: maxLength(100), minLength: minLength(10) },
+        description: { required, maxLength: maxLength(100), minLength: minLength(8) },
         price: { decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
