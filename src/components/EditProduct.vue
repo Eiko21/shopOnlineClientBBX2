@@ -28,7 +28,6 @@
                 @blur="$v.selectPriceReduction.$touch()"
             >
             </v-select>
-            <!-- <v-text-field v-model="creator" label="Creator" required readonly></v-text-field> -->
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
         </form>
     </div>
@@ -69,7 +68,6 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
-            // creator: null,
             editable: true
         }
     },
