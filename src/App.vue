@@ -5,7 +5,7 @@
       color="primary"
       dark
     >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
       <router-link :to="{ name: 'App' }">
         <v-toolbar-title class="toolbar-title">ShopOnline</v-toolbar-title>

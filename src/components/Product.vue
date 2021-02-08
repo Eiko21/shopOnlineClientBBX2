@@ -1,5 +1,8 @@
 <template>
     <div class="div-product-card">
+        <div>
+            <v-btn class="ma-2" color="secondary" @click="backToPrincipalPage()">Go back</v-btn>
+        </div>
         <v-card class="mx-auto" max-width="500">
             <v-card-text>
                 <p class="display-1 text--primary">
@@ -61,6 +64,9 @@ export default {
                     this.currentState = 'ACTIVE';
                 })
             : this.product = updateProductSelected(this.product);
+        },
+        backToPrincipalPage(){
+            router.go(-1);
         }
     }
 }

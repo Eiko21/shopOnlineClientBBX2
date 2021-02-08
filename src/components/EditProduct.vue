@@ -28,6 +28,7 @@
             >
             </v-select>
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
+            <v-btn class="mr-4" color="red" dark @click="cancelEdit()">Cancel</v-btn>
         </form>
 
         <v-dialog v-model="showDialog" max-width="500px">
@@ -123,6 +124,9 @@ export default {
                     this.updated = res;
                     this.showDialog = false;
                 });
+        },
+        cancelEdit(){
+            router.go(-1);
         }
     },
     computed:{

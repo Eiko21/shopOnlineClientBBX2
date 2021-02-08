@@ -28,12 +28,14 @@
             >
             </v-select>
             <v-btn class="mr-4" @click="createProduct()">Create product</v-btn>
-            <v-btn @click="clear">Clear</v-btn>
+            <v-btn class="mr-4" color="red" dark @click="cancelEdit()">Cancel</v-btn>
+            <v-btn @click="clear">Clear inputs</v-btn>
         </form>
         <v-alert class="alert" type="success" v-if="created">The product has been created <b>SUCCESSFULLY</b></v-alert>
     </div>
 </template>
 <script>
+import router from '../router/router'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, minLength, decimal, numeric, minValue, maxValue } from 'vuelidate/lib/validators'
 import getAllSuppliers from '../services/getSuppliersList'
@@ -68,6 +70,7 @@ export default {
             created: false
         }
     },
+    router: router,
     created(){
         this.suppliers = getAllSuppliers();
         this.priceReductions = getAllPriceReductions();
@@ -86,6 +89,9 @@ export default {
             this.selectState = null;
             this.selectSupplier = null;
             this.selectPriceReduction = null;
+        },
+        cancelEdit(){
+            router.go(-1);
         }
     },
     computed:{
