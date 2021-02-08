@@ -3,12 +3,7 @@
     <div class="div-card">
       <v-container fluid>
         <v-radio-group v-model="radioGroup">
-          <v-radio
-            v-for="option in radioOptions"
-            :key="option"
-            :label="`${option} products`"
-            :value="option"
-          ></v-radio>
+          <v-radio v-for="option in radioOptions" :key="option" :label="`${option} products`" :value="option"></v-radio>
         </v-radio-group>
 
         <router-link :to="{ name: 'NewProduct' }">
@@ -57,7 +52,7 @@ export default {
     return {
       products: [],
       checkbox: false,
-      radioOptions: ["ALL", "ACTIVE", "DISCOUNTED"],
+      radioOptions: ["ALL", "ACTIVE", "DISCONTINUED"],
       radioGroup: "ALL",
     };
   },

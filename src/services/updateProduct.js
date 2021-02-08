@@ -11,7 +11,6 @@ export default function updateProductSelected(idproduct, code, description, pric
     let dateToOriginFormat = `${currentDateFormat[2]}-${currentDateFormat[1]}-${currentDateFormat[0]}`;
 
     isNaN(supplier_id) ? {} : getSupplierById(supplier_id).then(res => supplierSelected = cloneDeep(res));
-    
     isNaN(priceReduction_id) ? {} : getPriceReductionById(priceReduction_id).then(res => priceReductionSelected = cloneDeep(res));
 
     productUpdated = {

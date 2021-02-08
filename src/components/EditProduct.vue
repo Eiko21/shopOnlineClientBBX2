@@ -1,7 +1,7 @@
 <template>
     <div id="form-edit-div">
-        <v-alert type="info" v-if="!editable">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert>
-        <form v-else enctype="multiplart/form-data">
+        <!-- <v-alert type="info" v-if="!editable">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert> -->
+        <form enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
                 @blur="$v.code.$touch()"
@@ -30,18 +30,18 @@
             </v-select>
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
         </form>
-        <v-alert class="alert" type="success" v-if="updated">The product has been created <b>SUCCESSFULLY</b></v-alert>
+        <v-alert class="alert" type="success" v-if="updated">The product has been edited <b>SUCCESSFULLY</b></v-alert>
     </div>
 </template>
 <script>
 import router from '../router/router'
-import updateProductSelected from '../services/updateProduct'
 import cloneDeep from 'lodash.clonedeep'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, minLength, decimal, numeric, minValue, maxValue } from 'vuelidate/lib/validators'
 import getAllSuppliers from '../services/getSuppliersList'
 import getAllPriceReductions from '../services/getPriceReductionList'
 import getProduct from '../services/getProduct'
+import updateProductSelected from '../services/updateProduct'
 
 export default {
     mixins: [validationMixin],
@@ -63,14 +63,15 @@ export default {
             description: '',
             price: null,
             creationDate: new Date().toISOString().slice(0,10),
-            states: ["ACTIVE", "DISCOUNTED"],
+            states: ["ACTIVE", "DISCONTINUED"],
             suppliers: [],
             priceReductions: [],
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
             editable: true,
-            updated: false
+            updated: false,
+            checkbox: false
         }
     },
     router: router,
@@ -99,7 +100,7 @@ export default {
             this.$v.$touch()
             updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
                 this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator)
-            .then(res => this.updated = res);
+                .then(res => this.updated = res);
         }
     },
     computed:{
