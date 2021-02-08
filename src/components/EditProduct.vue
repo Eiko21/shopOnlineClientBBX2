@@ -30,6 +30,7 @@
             </v-select>
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
         </form>
+        <v-alert class="alert" type="success" v-if="updated">The product has been created <b>SUCCESSFULLY</b></v-alert>
     </div>
 </template>
 <script>
@@ -68,7 +69,8 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
-            editable: true
+            editable: true,
+            updated: false
         }
     },
     router: router,
@@ -97,7 +99,7 @@ export default {
             this.$v.$touch()
             updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
                 this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator)
-            .then(res => this.product = cloneDeep(res));
+            .then(res => this.updated = res);
         }
     },
     computed:{
@@ -141,5 +143,9 @@ export default {
     form{
         width: 60%;
         margin: 0 auto;
+    }
+    .alert{
+        margin: 5% auto;
+        width: 50%;
     }
 </style>

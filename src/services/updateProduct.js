@@ -1,4 +1,3 @@
-import getProduct from '../services/getProduct'
 import cloneDeep from 'lodash.clonedeep'
 import getPriceReduction from '../services/getPriceReduction'
 import getSupplier from '../services/getSupplier'
@@ -37,7 +36,7 @@ export default function updateProductSelected(idproduct, code, description, pric
     .then(response => { 
         return response.status == 200 ? response.json() : Promise.reject(response.status) 
     })
-    .then(() => { return getProduct(idproduct) })
+    .then(() => { return true })
     .catch(err => { throw err })
 }
 
