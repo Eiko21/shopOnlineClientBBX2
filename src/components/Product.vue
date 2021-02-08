@@ -9,6 +9,7 @@
                 <p class="text--primary">State: {{ currentState }}</p>
                 <p class="text--primary">Creation date: {{ product.creationDate }}</p>
                 <p class="text--primary">Created by: <b>{{ product && product.creator && product.creator.username }}</b></p>
+                <p class="text--primary" :hidden="!discontinued">Discontinued by: <b>{{ product.comment }}</b></p>
             </v-card-text>
             <v-card-actions>
                 <router-link :to="{ name: 'EditProduct', params: { id: idproduct } }">
@@ -18,6 +19,7 @@
                 </router-link>
             </v-card-actions>
         </v-card>
+        <v-alert type="info" class="alert" v-if="discontinued">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert>
         <v-container class="px-0" fluid v-if="discontinued">
             <v-checkbox v-model="checkbox" :label="`Change product state to ACTIVE`" @click="updateStateProduct()"></v-checkbox>
         </v-container>
@@ -53,7 +55,6 @@ export default {
             });
         },
         updateStateProduct(){
-            // this.product = updateProductSelected(this.product);
             this.checkbox ? updateProductState(this.idproduct, this.product)
                 .then( () => { 
                     this.discontinued = false;
@@ -68,5 +69,9 @@ export default {
     .div-product-card{
         margin: 4% 5%;
         padding: 0;
+    }
+    .alert{
+        margin: 2% 0;
+        width: 50%;
     }
 </style>
