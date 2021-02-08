@@ -1,6 +1,5 @@
 <template>
     <div id="form-edit-div">
-        <!-- <v-alert type="info" v-if="!editable">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert> -->
         <form enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
@@ -30,6 +29,21 @@
             </v-select>
             <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
         </form>
+
+        <v-dialog v-model="showDialog" max-width="500px">
+        <v-card>
+          <v-card-title>You have changed the product state to DISCONTINUED.</v-card-title>
+          <v-card-text>
+            <v-select v-model="reasonSelected" :items="reasons" :error-messages="selectReasonErrors" label="Select a reason" item-text="reason" 
+                item-value="reasonid" required @change="$v.reasonSelected.$touch()" @blur="$v.reasonSelected.$touch()">
+            </v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" text @click="updateProduct()">Save option</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
         <v-alert class="alert" type="success" v-if="updated">The product has been edited <b>SUCCESSFULLY</b></v-alert>
     </div>
 </template>
@@ -48,12 +62,13 @@ export default {
     name:'EditProduct',
     validations: {
         code: { required, numeric, minLength: minLength(4) },
-        description: { required, maxLength: maxLength(100), minLength: minLength(10) },
+        description: { required, maxLength: maxLength(100), minLength: minLength(8) },
         price: { decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
         selectSupplier: {},
-        selectPriceReduction: {}
+        selectPriceReduction: {},
+        reasonSelected: { required }
     },
     data() {
         return {
@@ -69,9 +84,14 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
-            editable: true,
             updated: false,
-            checkbox: false
+            showDialog: false,
+            reasons: [
+                { reason: "Termination of the contract with the supplier", reasonid: 0},
+                { reason: "Out of sale, temporarily", reasonid: 1},
+                { reason: "Bad condition of the product", reasonid: 2},
+            ],
+            reasonSelected: null
         }
     },
     router: router,
@@ -85,8 +105,6 @@ export default {
             getProduct(this.idproduct)
             .then(res => this.product = cloneDeep(res) )
             .then( () => {
-                this.product.state === 'ACTIVE' ? this.editable = true : this.editable = false;
-
                 this.code = this.product.code
                 this.description = this.product.description;
                 this.price = this.product.price;
@@ -98,9 +116,13 @@ export default {
         },
         updateProduct(){
             this.$v.$touch()
-            updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
-                this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator)
-                .then(res => this.updated = res);
+            this.selectState != this.product.state && !this.showDialog ? this.showDialog = true
+            : updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
+                this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator, this.reasonSelected)
+                .then(res => {
+                    this.updated = res;
+                    this.showDialog = false;
+                });
         }
     },
     computed:{
@@ -108,6 +130,12 @@ export default {
             const errors = []
             if (!this.$v.selectState.$dirty) return errors
             !this.$v.selectState.required && errors.push('State is required')
+            return errors
+        },
+        selectReasonErrors () {
+            const errors = []
+            if (!this.$v.reasonSelected.$dirty) return errors
+            !this.$v.reasonSelected.required && errors.push('Reason is required')
             return errors
         },
         codeErrors () {

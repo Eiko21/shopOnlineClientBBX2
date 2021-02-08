@@ -6,7 +6,7 @@ let productUpdated = {}
 let priceReductionSelected = {}
 let supplierSelected = {}
 
-export default function updateProductSelected(idproduct, code, description, price, selectState, supplier_id, priceReduction_id, creationDate, creator){
+export default function updateProductSelected(idproduct, code, description, price, selectState, supplier_id, priceReduction_id, creationDate, creator, reason){
     let currentDateFormat = creationDate.split("/")
     let dateToOriginFormat = `${currentDateFormat[2]}-${currentDateFormat[1]}-${currentDateFormat[0]}`;
 
@@ -22,9 +22,10 @@ export default function updateProductSelected(idproduct, code, description, pric
         suppliers: supplierSelected,
         priceReductions: priceReductionSelected,
         creationDate: dateToOriginFormat,
-        creator: creator
+        creator: creator,
+        comment: reason
     }
-
+    
     return fetch(`http://localhost:8086/api/products/${idproduct}/edit`, {
         method: 'PUT',
         headers:{
