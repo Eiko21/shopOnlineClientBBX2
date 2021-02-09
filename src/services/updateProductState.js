@@ -1,6 +1,6 @@
 import transformDateToOriginalFormat from '../resources/changeOriginalDateFormat'
 import getProduct from '../services/getProduct'
-
+ 
 let productUpdated = {}
 
 export default function updateProductState(idproduct,product){
@@ -16,7 +16,7 @@ export default function updateProductState(idproduct,product){
         creator: product.creator
     }
 
-    return fetch(`http://localhost:8086/api/products/${idproduct}/edit`, {
+    return fetch(`http://localhost:8086/api/private/products/${idproduct}/edit`, {
         method: 'PUT',
         headers:{
             'Content-Type': 'application/json',

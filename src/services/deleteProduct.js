@@ -1,7 +1,7 @@
 import getAllProducts from "../services/getProductList"
 
 export default function deleteProduct(idproduct){
-    return fetch(`http://localhost:8086/api/products/${idproduct}`, {
+    return fetch(`http://localhost:8086/api/private/products/${idproduct}`, {
         method: 'DELETE'
     })
     .then(response => { 

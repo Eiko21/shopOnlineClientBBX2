@@ -26,7 +26,7 @@ export default function updateProductSelected(idproduct, code, description, pric
         comment: reason
     }
     
-    return fetch(`http://localhost:8086/api/products/${idproduct}/edit`, {
+    return fetch(`http://localhost:8086/api/private/products/${idproduct}/edit`, {
         method: 'PUT',
         headers:{
             'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import getPriceReduction from '../services/getPriceReduction'
 import getSupplier from '../services/getSupplier'
 
-const SERVER_URL = "http://localhost:8086/api/products"
+const SERVER_URL = "http://localhost:8086/api/private/products"
 let productCreated = {}
 let priceReductionSelected = {}
 let supplierSelected = {}
