@@ -1,10 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Product from '../components/Product'
-import Products from '../components/Products'
-import NewProduct from '../components/NewProduct'
-import EditProduct from '../components/EditProduct'
-import App from '../App';
 
 Vue.use(VueRouter);
 
@@ -15,28 +10,38 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'App',
-      component: App,
+      component: () => import('../App'),
       redirect: '/products',
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../components/auth-pages/Login'),
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: () => import('../components/auth-pages/Register'),
     },
     {
       path: '/products',
       name: 'Products',
-      component: Products
+      component: () => import('../components/Products')
     },
     { 
       path: '/product/create',
       name: 'NewProduct',
-      component: NewProduct
+      component: () => import('../components/NewProduct')
     },
     { 
       path: '/product/:id',
       name: 'Product',
-      component: Product,
+      component: () => import('../components/Product'),
     },
     { 
       path: '/product/edit/:id',
       name: 'EditProduct',
-      component: EditProduct
+      component: () => import('../components/EditProduct')
     },
   ] 
 });
