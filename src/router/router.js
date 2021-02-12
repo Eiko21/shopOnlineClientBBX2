@@ -19,14 +19,9 @@ const router = new VueRouter({
       component: () => import('../components/auth-pages/Login'),
     },
     {
-      path: '/register',
-      name: 'Register',
-      component: () => import('../components/auth-pages/Register'),
-    },
-    {
-      path: '/products',
+      path: '/products/',
       name: 'Products',
-      component: () => import('../components/Products')
+      component: () => import('../components/Products'),
     },
     { 
       path: '/product/create',

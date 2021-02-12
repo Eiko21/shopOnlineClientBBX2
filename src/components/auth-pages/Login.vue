@@ -13,17 +13,14 @@
             ></v-text-field>
             <v-btn class="mr-4" @click="login()">Sign in</v-btn>
         </form>
-        <div class="link-to-registerForm">
-            <p>If you don't have an account 
-                <router-link :to="{ name: 'Register' }">Register now</router-link>
-            </p>
-        </div>
     </div>
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import auth from '../../auth/auth.services'
+import cloneDeep from 'lodash.clonedeep'
+import router from '../../router/router'
 
 export default {
     mixins: [validationMixin],
@@ -36,20 +33,22 @@ export default {
         return {
             username: "",
             password: "",
-            error: false
+            error: false,
+            user: {}
         }
     },
+    router: router,
     methods:{
         login(){
             this.$v.$touch();
-            try {
-                auth.login(this.username,this.password);
-                const user = { username: this.username };
-                auth.setUserLogged(user);
-                this.$router.push("/");
-            } catch (error) {
-                this.error = true;
-            }
+            auth.login(this.username,this.password)
+                .then( res => {
+                    this.user = cloneDeep(res)
+                    const userCookie = { user: this.user };
+                    auth.setUserLogged(userCookie);
+                    this.$router.push({ name: "Products" });
+                })
+                .catch(() => { this.error = true });
         }
     },
     computed:{
