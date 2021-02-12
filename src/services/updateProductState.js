@@ -13,10 +13,10 @@ export default function updateProductState(idproduct,product){
         suppliers: product.suppliers,
         priceReductions: product.priceReductions,
         creationDate: transformDateToOriginalFormat(product.creationDate),
-        creator: product.creator
+        creator: product.creator,
     }
 
-    return fetch(`http://localhost:8086/api/private/products/${idproduct}/edit`, {
+    return fetch(`http://localhost:8086/api/products/${idproduct}/edit`, {
         method: 'PUT',
         headers:{
             'Content-Type': 'application/json',

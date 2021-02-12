@@ -1,5 +1,8 @@
 <template>
     <div id="form-edit-div">
+        <v-alert type="error" v-if="error">Only the product creator can edit this product. 
+            <a id="error-link" @click="cancelEdit()">Click here to return to the previous page.</a>
+        </v-alert>
         <form enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
@@ -27,25 +30,27 @@
                 @blur="$v.selectPriceReduction.$touch()"
             >
             </v-select>
-            <v-btn class="mr-4" @click="updateProduct()">Edit product</v-btn>
-            <v-btn class="mr-4" color="red" dark @click="cancelEdit()">Cancel</v-btn>
+            <v-text-field v-model="creator" label="Creator" required readonly></v-text-field>
+            <v-btn class="mr-4" @click="updateProduct()" v-if="!error">Edit product</v-btn>
+            <v-btn class="mr-4" color="red" dark @click="cancelEdit()" v-if="!error">Cancel</v-btn>
         </form>
 
         <v-dialog v-model="showDialog" max-width="500px">
-        <v-card>
-          <v-card-title>You have changed the product state to DISCONTINUED.</v-card-title>
-          <v-card-text>
-            <v-select v-model="reasonSelected" :items="reasons" :error-messages="selectReasonErrors" label="Select a reason" item-text="reason" 
-                item-value="reasonid" required @change="$v.reasonSelected.$touch()" @blur="$v.reasonSelected.$touch()">
-            </v-select>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" text @click="updateProduct()">Save option</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-        <v-alert class="alert" type="success" v-if="updated">The product has been edited <b>SUCCESSFULLY</b></v-alert>
+            <v-card>
+                <v-card-title>You have changed the product state to DISCONTINUED.</v-card-title>
+                <v-card-text>
+                    <v-select v-model="reasonSelected" :items="reasons" :error-messages="selectReasonErrors" label="Select a reason" item-text="reason" 
+                        item-value="reasonid" required @change="$v.reasonSelected.$touch()" @blur="$v.reasonSelected.$touch()">
+                    </v-select>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn color="primary" text @click="updateProduct()">Save option</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-alert class="alert" type="success" v-if="updated">The product has been edited <b>SUCCESSFULLY</b>. 
+            <a @click="cancelEdit()">Return to the product list.</a>
+        </v-alert>
     </div>
 </template>
 <script>
@@ -57,6 +62,7 @@ import getAllSuppliers from '../services/getSuppliersList'
 import getAllPriceReductions from '../services/getPriceReductionList'
 import getProduct from '../services/getProduct'
 import updateProductSelected from '../services/updateProduct'
+import auth from '../auth/auth.services'
 
 export default {
     mixins: [validationMixin],
@@ -85,6 +91,7 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
+            creator: null,
             updated: false,
             showDialog: false,
             reasons: [
@@ -92,7 +99,9 @@ export default {
                 { reason: "Out of sale, temporarily", reasonid: 1},
                 { reason: "Bad condition of the product", reasonid: 2},
             ],
-            reasonSelected: null
+            reasonSelected: null,
+            error: false,
+            userLogged: auth.getUserLogged().username
         }
     },
     router: router,
@@ -102,7 +111,7 @@ export default {
         this.priceReductions = getAllPriceReductions();
     },
     methods:{
-        getProductToEdit(){
+        getProductToEdit(){             
             getProduct(this.idproduct)
             .then(res => this.product = cloneDeep(res) )
             .then( () => {
@@ -113,11 +122,15 @@ export default {
                 this.selectSupplier = this.product.suppliers == null ? {} : this.product.suppliers;
                 this.selectPriceReduction = this.product.priceReductions == null ? {} : this.product.priceReductions;
                 this.creationDate = this.product.creationDate;
+                this.creator = this.product.creator.username;
+
+                this.product.creator.username == this.userLogged ?  this.error = false : this.error = true;
             });
         },
         updateProduct(){
             this.$v.$touch()
-            this.selectState != this.product.state && !this.showDialog ? this.showDialog = true
+            this.selectState != this.product.state && !this.showDialog && this.product.creator.username == this.userLogged 
+            ? this.showDialog = true
             : updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
                 this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator, this.reasonSelected)
                 .then(res => {
@@ -180,5 +193,14 @@ export default {
     .alert{
         margin: 5% auto;
         width: 50%;
+    }
+    .alert a{
+        color: white;
+        font-weight: bold;
+    }
+
+    #error-link{
+        color: white;
+        font-weight: bold;
     }
 </style>

@@ -31,7 +31,9 @@
             <v-btn class="mr-4" color="red" dark @click="cancelEdit()">Cancel</v-btn>
             <v-btn @click="clear">Clear inputs</v-btn>
         </form>
-        <v-alert class="alert" type="success" v-if="created">The product has been created <b>SUCCESSFULLY</b></v-alert>
+        <v-alert class="alert" type="success" v-if="created">The product has been created <b>SUCCESSFULLY</b>. 
+            <a @click="cancelEdit()">Return to the product list.</a>
+        </v-alert>
     </div>
 </template>
 <script>
@@ -67,7 +69,7 @@ export default {
             selectState: "ACTIVE",
             selectSupplier: null,
             selectPriceReduction: null,
-            created: false
+            created: false,
         }
     },
     router: router,
@@ -140,5 +142,9 @@ export default {
     .alert{
         margin: 5% auto;
         width: 50%;
+    }
+    .alert a{
+        color: white;
+        font-weight: bold;
     }
 </style>

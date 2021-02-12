@@ -1,29 +1,27 @@
 import getPriceReduction from '../services/getPriceReduction'
 import getSupplier from '../services/getSupplier'
+import auth from '../auth/auth.services'
 
-const SERVER_URL = "http://localhost:8086/api/private/products"
+const SERVER_URL = "http://localhost:8086/api/products"
 let productCreated = {}
 let priceReductionSelected = {}
 let supplierSelected = {}
 
 export default function createProduct(code, description, price, state, supplier_id, priceReduction_id, creationDate){
-    
+    let user = auth.getUserLogged();
+    user.products = [];
+
     productCreated = {
         code: code,
         description: description,
         price: price,
         state: state,
-        suppliers: getSupplierById(supplier_id),
-        priceReductions: getPriceReductionById(priceReduction_id),
+        suppliers: supplier_id === null ? {} : getSupplierById(supplier_id),
+        priceReductions: priceReduction_id === null ? {} : getPriceReductionById(priceReduction_id),
         creationDate: creationDate,
-        creator: {
-            userid: 3,
-            username: "UserTwo",
-            userpassword: "user2345",
-            role: "USER"
-        }
+        creator: user
     }
-
+    
     return fetch(SERVER_URL, {
         method: 'POST',
         headers: {
@@ -32,7 +30,7 @@ export default function createProduct(code, description, price, state, supplier_
         body: JSON.stringify(productCreated),
     })
     .then(response => {  
-        return response.status == 200 ? response.json() : Promise.reject(response.status) 
+        return response.status == 200 ? response.text() : Promise.reject(response.status) 
     })
     .then(() => { return true })
     .catch(err => { throw err })
