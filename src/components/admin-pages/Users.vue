@@ -58,7 +58,6 @@ export default {
                 { text:  '' }
             ],
             search: '',
-            dialogDelete: false,
             users: [],
             dialog: false
         }
@@ -72,7 +71,10 @@ export default {
         },
         deleteUserSelected(userid){
             deleteUser(userid)
-            .then(() => this.users.splice(-1, 1))
+            .then(() => {
+                this.dialog = false;
+                this.users.splice(-1, 1);
+            })
         },
     }
 }
