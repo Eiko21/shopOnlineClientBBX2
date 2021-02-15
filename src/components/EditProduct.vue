@@ -60,8 +60,8 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-alert class="alert" type="success" v-if="updated">The product has been edited <b>SUCCESSFULLY</b>. 
-            <a @click="cancelEdit()">Return to the product list.</a>
+        <v-alert class="alert" type="success" v-if="updated">The product has been edited successfully. 
+            <a @click="cancelEdit()">Come back to see the product.</a>
         </v-alert>
     </div>
 </template>
