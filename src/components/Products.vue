@@ -11,9 +11,9 @@
       </v-container>
 
     <v-alert class="alert" type="error" v-if="error">You must be the ADMINISTRATOR to remove any product.</v-alert>
-    <v-alert class="alert" type="success" v-if="isDeleted">The product has been removed <b>SUCCESSFULLY</b>.</v-alert>
+    <v-alert class="alert" type="success" v-if="isDeleted">The product has been removed successfully.</v-alert>
       <v-row no-gutters>
-        <v-col v-for="product in filterProducts" :key="product.idproduct" cols="12" sm="4" >
+        <v-col v-for="product in filterProducts" :key="product.idproduct" cols="12" sm="4">
           <v-card class="mx-auto" max-width="500">
             <v-card-text>
               <p class="display-1 text--primary">
