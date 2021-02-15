@@ -42,13 +42,13 @@ export default {
         login(){
             this.$v.$touch();
             auth.login(this.username,this.password)
-                .then( res => {
-                    this.user = cloneDeep(res)
-                    const userCookie = { user: this.user };
-                    auth.setUserLogged(userCookie);
-                    this.$router.push({ name: "Products" });
-                })
-                .catch(() => { this.error = true });
+            .then( res => {
+                this.user = cloneDeep(res)
+                const userCookie = { user: this.user };
+                auth.setUserLogged(userCookie);
+                this.$router.push({ name: "Products" });
+            })
+            .catch(() => { this.error = true });
         }
     },
     computed:{
