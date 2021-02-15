@@ -17,11 +17,20 @@
           </v-list-item>
 
           <v-list-item v-if="userLogged == null">
-            <v-list-item-icon>
-              <span class="material-icons">login</span>
-            </v-list-item-icon>
             <router-link :to="{ name: 'Login' }" class="links">
-              <v-list-item-title class="title-login">Sign in</v-list-item-title>
+              <v-list-item-icon>
+                <span class="material-icons">login</span>
+              </v-list-item-icon>
+                <v-list-item-title class="title-login">Sign in</v-list-item-title>
+            </router-link>
+          </v-list-item>
+
+          <v-list-item v-if="userLogged != null && userLogged.role == 'ADMIN'">
+            <router-link :to="{ name: 'Users' }" class="links">
+              <v-list-item-icon>
+                <span class="material-icons">list</span>
+              </v-list-item-icon>
+              <v-list-item-title >Users registered</v-list-item-title>
             </router-link>
           </v-list-item>
 
@@ -97,6 +106,7 @@ export default {
   }
 
   .links{
+    display: flex;
     color: black;
     text-decoration: none;
   }
