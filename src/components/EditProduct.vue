@@ -1,8 +1,20 @@
 <template>
     <div id="form-edit-div">
-        <v-alert type="error" v-if="error">Only the product creator can edit this product. 
+        <v-alert type="error" class="alert" v-if="error">Only the product creator can edit this product. 
             <a id="error-link" @click="cancelEdit()">Click here to return to the previous page.</a>
         </v-alert>
+
+        <v-dialog v-model="dialog" persistent max-width="290" >
+            <v-card>
+                <v-card-title class="headline">Product edition</v-card-title>
+                <v-card-text>No fields have been modified.</v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="dialog = false">Accept</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         <form enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
@@ -12,7 +24,7 @@
                 @input="$v.description.$touch()"
                 @blur="$v.description.$touch()"
             ></v-text-field>
-            <v-text-field v-model="price" :error-messages="priceErrors" :counter="99999" label="Price"
+            <v-text-field v-model="price" :error-messages="priceErrors" :counter="99999" label="Price (€)"
                 @input="$v.price.$touch()"
                 @blur="$v.price.$touch()"
             ></v-text-field>
@@ -101,7 +113,8 @@ export default {
             ],
             reasonSelected: null,
             error: false,
-            userLogged: auth.getUserLogged().username
+            userLogged: auth.getUserLogged().username,
+            dialog: false
         }
     },
     router: router,
@@ -129,14 +142,20 @@ export default {
         },
         updateProduct(){
             this.$v.$touch()
-            this.selectState != this.product.state && !this.showDialog && this.product.creator.username == this.userLogged 
-            ? this.showDialog = true
-            : updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
-                this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator, this.reasonSelected)
-                .then(res => {
-                    this.updated = res;
-                    this.showDialog = false;
-                });
+
+            this.code !== this.product.code || this.description !== this.product.description || this.price !== this.product.price
+            || this.selectState !== this.product.state || this.selectSupplier !== this.product.suppliers ||
+            this.selectPriceReduction !== this.product.priceReductions || this.creationDate !== this.product.creationDate 
+            ? 
+                this.selectState != this.product.state && !this.showDialog && this.product.creator.username == this.userLogged 
+                    ? this.showDialog = true
+                    : updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
+                        this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator, this.reasonSelected)
+                        .then(res => {
+                            this.updated = res;
+                            this.showDialog = false;
+                        })
+            : this.dialog = true;
         },
         cancelEdit(){
             router.go(-1);
