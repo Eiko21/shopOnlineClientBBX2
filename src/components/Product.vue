@@ -16,14 +16,14 @@
             </v-card-text>
             <v-card-actions>
                 <router-link :to="{ name: 'EditProduct', params: { id: idproduct } }">
-                    <v-btn class="mx-2" fab dark color="blue" :disabled="discontinued">
+                    <v-btn class="mx-2" fab dark color="blue" :disabled="discontinued || userLogged == null">
                         <v-icon dark>mdi-pencil</v-icon>
                     </v-btn>
                 </router-link>
             </v-card-actions>
         </v-card>
-        <v-alert type="info" class="alert" v-if="discontinued">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert>
-        <v-container class="px-0" fluid v-if="discontinued">
+        <v-alert type="info" class="alert" v-if="discontinued && userLogged != null">This product cannot be editable because it is <b>DISCOTINUED</b></v-alert>
+        <v-container class="px-0" fluid v-if="discontinued && userLogged != null">
             <v-checkbox v-model="checkbox" :label="`Change product state to ACTIVE`" @click="updateStateProduct()"></v-checkbox>
         </v-container>
     </div>
@@ -33,6 +33,7 @@ import router from '../router/router'
 import getProduct from '../services/getProduct'
 import updateProductSelected from '../services/updateProduct'
 import updateProductState from '../services/updateProductState'
+import auth from '../auth/auth.services'
 
 export default {
     name: 'Product',
@@ -42,7 +43,9 @@ export default {
             idproduct: router.app.$route.params.id,
             discontinued: false,
             checkbox: false,
-            currentState: null
+            currentState: null,
+            userLogged: auth.getUserLogged(),
+            isCreator: false
         }
     },
     router: router,
