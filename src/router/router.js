@@ -24,20 +24,30 @@ const router = new VueRouter({
       component: () => import('../components/Products'),
     },
     { 
-      path: '/product/create',
+      path: '/products/create',
       name: 'NewProduct',
       component: () => import('../components/NewProduct')
     },
     { 
-      path: '/product/:id',
+      path: '/products/:id',
       name: 'Product',
       component: () => import('../components/Product'),
     },
     { 
-      path: '/product/edit/:id',
+      path: '/products/edit/:id',
       name: 'EditProduct',
       component: () => import('../components/EditProduct')
     },
+    { 
+      path: '/users',
+      name: 'Users',
+      component: () => import('../components/admin-pages/Users')
+    },
+    { 
+      path: '/users/create',
+      name: 'NewUser',
+      component: () => import('../components/admin-pages/NewUser')
+    }
   ] 
 });
 
