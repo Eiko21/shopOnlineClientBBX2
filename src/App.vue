@@ -33,6 +33,14 @@
               <v-list-item-title >Users registered</v-list-item-title>
             </router-link>
           </v-list-item>
+          <v-list-item v-if="userLogged != null && userLogged.role == 'ADMIN'">
+            <router-link :to="{ name: 'Products' }" class="links">
+              <v-list-item-icon>
+                <span class="material-icons">list</span>
+              </v-list-item-icon>
+              <v-list-item-title >Products</v-list-item-title>
+            </router-link>
+          </v-list-item>
 
           <v-list-item v-if="userLogged != null" @click="logout()">
             <v-list-item-icon>
