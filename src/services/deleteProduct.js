@@ -1,12 +1,13 @@
-import getAllProducts from "../services/getProductList"
-
-export default function deleteProduct(idproduct){
-    return fetch(`http://localhost:8086/api/private/products/${idproduct}`, {
-        method: 'DELETE'
+export default async function deleteProduct(idproduct){
+    return fetch(`http://localhost:8086/api/products/delete/${idproduct}`, {
+        method: 'DELETE',
+        headers: {
+         'Content-type': 'application/json'
+        },
+        body: null
     })
-    .then(response => { 
-        return response.status == 200 ? response.text() : Promise.reject(response.status); 
+    .then( response => { 
+        return response.status == 200 || response.status == 204 ? response.text() : Promise.reject(response.status) 
     })
-    .then(() => { return getAllProducts() })
-    .catch(err => { throw err })
+    .catch((err) => { throw err });
 }
