@@ -1,5 +1,16 @@
 <template>
     <div id="form-create-div">
+        <v-dialog v-model="dialog" persistent max-width="290">
+            <v-card>
+                <v-card-title class="headline">Product creation</v-card-title>
+                <v-card-text>You must fill all the required fields.</v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="dialog = false">Accept</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         <form method="POST" enctype="multiplart/form-data">
             <v-text-field v-model="code" :error-messages="codeErrors" :counter="5" label="Code" required
                 @input="$v.code.$touch()"
@@ -50,7 +61,7 @@ export default {
     validations: {
         code: { required, numeric, minLength: minLength(4) },
         description: { required, maxLength: maxLength(100), minLength: minLength(8) },
-        price: { decimal, minValue: minValue(1), maxValue: maxValue(99999) },
+        price: { required, decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
         selectSupplier: {},
@@ -70,6 +81,7 @@ export default {
             selectSupplier: null,
             selectPriceReduction: null,
             created: false,
+            dialog: false
         }
     },
     router: router,
@@ -80,8 +92,10 @@ export default {
     methods:{
         createProduct(){
             this.$v.$touch();
-            createProduct(this.code, this.description, this.price, this.selectState, this.selectSupplier, 
-                this.selectPriceReduction, this.creationDate).then(res => this.created = res);
+            this.code == null || this.description == null || this.price == null || this.creationDate == null 
+            || this.selectState == null ? this.dialog = true : 
+                createProduct(this.code, this.description, this.price, this.selectState, this.selectSupplier, 
+                    this.selectPriceReduction, this.creationDate).then(res => this.created = res);
         },
         clear(){
             this.$v.$reset();
@@ -122,6 +136,7 @@ export default {
         priceErrors () {
             const errors = [];
             if (!this.$v.price.$dirty) return errors;
+            !this.$v.price.required && errors.push('Price is required');
             !this.$v.price.minValue && errors.push('Price must be at least 0,1€');
             !this.$v.price.maxValue && errors.push('Price must be at most 99999€');
             return errors;
