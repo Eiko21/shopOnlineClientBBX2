@@ -5,39 +5,42 @@
         <v-radio-group v-model="radioGroup">
           <v-radio v-for="option in radioOptions" :key="option" :label="`${option} products`" :value="option"></v-radio>
         </v-radio-group>
-
-        <router-link :to="{ name: 'NewProduct' }">
-          <v-btn class="mx-2" fab dark color="blue">
-            <v-icon dark>mdi-plus</v-icon>
-          </v-btn>
+        <router-link :to="{ name: 'NewProduct' }" class="link-create" v-if="userLogged != null">
+          <v-btn class="mx-2" fab dark color="blue"><v-icon dark>mdi-plus</v-icon></v-btn>
         </router-link>
       </v-container>
-      <div v-for="product in filterProducts" v-bind:key="product.idproduct">
-        <v-card class="mx-auto" max-width="500">
-          <v-card-text>
-            <p class="display-1 text--primary">
-              <b>[{{ product.code }}]</b> {{ product.description }}
-            </p>
-            <div class="text--primary">Precio: {{ product.price }}€</div>
-            <div class="text--primary">State: {{ product.state }}</div>
-            <div class="text--primary">
-              Creation date: {{ product.creationDate }}
-            </div>
-            <div class="text--primary">
-              Created by: <b>{{ product.creator.username }}</b>
-            </div>
-          </v-card-text>
-          <v-card-actions>
-            <router-link :to="{ name: 'Product', params: { id: product.idproduct } }">
-              <v-btn class="ma-2" text color="deep-gray accent-4">Show product</v-btn>
-            </router-link>
-            <v-btn class="ma-2" color="red" dark @click="deleteProductOfTheList(product.idproduct)">Delete
-                <v-icon dark right>mdi-delete</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
+
+    <v-alert class="alert" type="error" v-if="error">You must be the ADMINISTRATOR to remove any product.</v-alert>
+    <v-alert class="alert" type="success" v-if="isDeleted">The product has been removed <b>SUCCESSFULLY</b>.</v-alert>
+      <v-row no-gutters>
+        <v-col v-for="product in filterProducts" :key="product.idproduct" cols="12" sm="4" >
+          <v-card class="mx-auto" max-width="500">
+            <v-card-text>
+              <p class="display-1 text--primary">
+                <b>[{{ product.code }}]</b> {{ product.description }}
+              </p>
+              <div class="text--primary">Precio: {{ product.price }}€</div>
+              <div class="text--primary">State: {{ product.state }}</div>
+              <div class="text--primary">
+                Creation date: {{ product.creationDate }}
+              </div>
+              <div class="text--primary">
+                Created by: <b>{{ product.creator.username }}</b>
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <router-link :to="{ name: 'Product', params: { id: product.idproduct, username: user.username } }">
+                <v-btn class="ma-2" text color="deep-gray accent-4">Show product</v-btn>
+              </router-link>
+              <v-btn class="ma-2" color="red" dark @click="deleteProductOfTheList(product.idproduct)" v-if="userLogged != null">Delete
+                  <v-icon dark right>mdi-delete</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
+    
   </div>
 </template>
 
@@ -45,6 +48,7 @@
 import router from "../router/router"
 import getAllProducts from "../services/getProductList"
 import deleteProduct from '../services/deleteProduct'
+import auth from '../auth/auth.services'
 
 export default {
   name: "Products",
@@ -54,23 +58,28 @@ export default {
       checkbox: false,
       radioOptions: ["ALL", "ACTIVE", "DISCONTINUED"],
       radioGroup: "ALL",
+      user: {
+        username: router.app.$route.username,
+        role: router.app.$route.role
+      },
+      userLogged: auth.getUserLogged(),
+      error: false,
+      isDeleted: false
     };
   },
   router: router,
   created() {
-    this.getProductList();
+    this.initialize();
   },
   methods: {
-    getProductList() {
-      this.products = getAllProducts();
-    },
-    getProductById(idproduct) {
-      router.push({ name: "Product", params: { id: idproduct } });
+    initialize () {
+      this.products = getAllProducts()
     },
     deleteProductOfTheList(idproduct){
-      deleteProduct(idproduct)
-      .then(res => this.products = res)
-      .then(() => window.location.reload());
+      this.userLogged.role == 'ADMIN' 
+      ? deleteProduct(idproduct).then(() => this.products.splice(-1, 1))
+        // .then(() => this.products = getAllProducts() )
+      : this.error = true;
     }
   },
   computed: {
@@ -84,15 +93,24 @@ export default {
 </script>
 
 <style scoped>
-.product-list {
-  margin: 0 5%;
-  display: grid;
-  grid-gap: 20px;
-  grid-template-areas: "card card card";
+
+.container{
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+.link-create{
+  margin: 0 auto;
 }
 
-.div-card {
-  grid-area: card;
-  grid-column: span 3;
+.product-list {
+  margin: 0 5%;
+  grid-gap: 20px;
 }
+
+.alert{
+  margin: 2% auto;
+  width: 50%;
+}
+
 </style>
