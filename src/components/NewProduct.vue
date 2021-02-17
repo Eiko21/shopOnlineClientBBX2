@@ -42,7 +42,7 @@
             <v-btn class="mr-4" color="red" dark @click="cancelEdit()">Cancel</v-btn>
             <v-btn @click="clear">Clear inputs</v-btn>
         </form>
-        <v-alert class="alert" type="success" v-if="created">The product has been created <b>SUCCESSFULLY</b>. 
+        <v-alert class="alert" type="success" v-if="created">The product has been created successfully. 
             <a @click="cancelEdit()">Return to the product list.</a>
         </v-alert>
     </div>
@@ -51,8 +51,12 @@
 import router from '../router/router'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, minLength, decimal, numeric, minValue, maxValue } from 'vuelidate/lib/validators'
+import auth from '../auth/auth.services'
 import getAllSuppliers from '../services/getSuppliersList'
 import getAllPriceReductions from '../services/getPriceReductionList'
+import getPriceReduction from '../services/getPriceReduction'
+import getSupplier from '../services/getSupplier'
+
 import createProduct from '../services/createProduct'
 
 export default {
@@ -60,7 +64,7 @@ export default {
     name: 'NewProduct',
     validations: {
         code: { required, numeric, minLength: minLength(4) },
-        description: { required, maxLength: maxLength(100), minLength: minLength(8) },
+        description: { required, numeric, maxLength: maxLength(100), minLength: minLength(8) },
         price: { required, decimal, minValue: minValue(1), maxValue: maxValue(99999) },
         creationDate: { required },
         selectState: { required },
@@ -69,7 +73,6 @@ export default {
     },
     data(){
         return{
-            productCreated: [],
             code: null,
             description: '',
             price: null,
@@ -81,21 +84,31 @@ export default {
             selectSupplier: null,
             selectPriceReduction: null,
             created: false,
-            dialog: false
+            dialog: false,
+            user: null,
+            supplier: {},
+            priceReduction: {}
         }
     },
     router: router,
     created(){
         this.suppliers = getAllSuppliers();
         this.priceReductions = getAllPriceReductions();
+        this.user = auth.getUserLogged();
+        this.user.products = [];
     },
     methods:{
-        createProduct(){
+        async createProduct(){
             this.$v.$touch();
-            this.code == null || this.description == null || this.price == null || this.creationDate == null 
-            || this.selectState == null ? this.dialog = true : 
-                createProduct(this.code, this.description, this.price, this.selectState, this.selectSupplier, 
-                    this.selectPriceReduction, this.creationDate).then(res => this.created = res);
+            if(this.code == null || this.description == null || this.price == null || this.creationDate == null || this.selectState == null){
+                this.dialog = true
+            }else{
+                this.selectSupplier == null ? this.supplier = {} : this.supplier = await getSupplier(this.selectSupplier).then(res => { return res }),
+                this.selectPriceReduction == null ? this.priceReduction = {} : 
+                    this.priceReduction = await getPriceReduction(this.selectPriceReduction).then(res => { return res }),
+                await createProduct(this.code, this.description, this.price, this.selectState, this.supplier, 
+                    this.priceReduction, this.creationDate, this.user).then(res => this.created = res)
+            }
         },
         clear(){
             this.$v.$reset();
@@ -128,6 +141,7 @@ export default {
         descriptionErrors () {
             const errors = [];
             if (!this.$v.description.$dirty) return errors;
+            this.$v.description.numeric && errors.push('Description must not be numeric');
             !this.$v.description.minLength && errors.push('Description must be at least 20 characters long');
             !this.$v.description.maxLength && errors.push('Description must be at most 100 characters long');
             !this.$v.description.required && errors.push('Description is required');

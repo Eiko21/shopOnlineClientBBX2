@@ -73,6 +73,8 @@ import { required, maxLength, minLength, decimal, numeric, minValue, maxValue } 
 import getAllSuppliers from '../services/getSuppliersList'
 import getAllPriceReductions from '../services/getPriceReductionList'
 import getProduct from '../services/getProduct'
+import getPriceReduction from '../services/getPriceReduction'
+import getSupplier from '../services/getSupplier'
 import updateProductSelected from '../services/updateProduct'
 import auth from '../auth/auth.services'
 
@@ -114,7 +116,9 @@ export default {
             reasonSelected: null,
             error: false,
             userLogged: auth.getUserLogged().username,
-            dialog: false
+            dialog: false,
+            supplier: {},
+            priceReduction: {}
         }
     },
     router: router,
@@ -140,22 +144,28 @@ export default {
                 this.product.creator.username == this.userLogged ?  this.error = false : this.error = true;
             });
         },
-        updateProduct(){
+        async updateProduct(){
             this.$v.$touch()
 
-            this.code !== this.product.code || this.description !== this.product.description || this.price !== this.product.price
-            || this.selectState !== this.product.state || this.selectSupplier !== this.product.suppliers ||
-            this.selectPriceReduction !== this.product.priceReductions || this.creationDate !== this.product.creationDate 
-            ? 
-                this.selectState != this.product.state && !this.showDialog && this.product.creator.username == this.userLogged 
-                    ? this.showDialog = true
-                    : updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, 
-                        this.selectSupplier, this.selectPriceReduction, this.creationDate, this.product.creator, this.reasonSelected)
+            if(this.code !== this.product.code || this.description !== this.product.description || this.price !== this.product.price
+            || this.selectState !== this.product.state || this.selectSupplier !== this.product.suppliers || this.selectPriceReduction !== this.product.priceReductions 
+            || this.creationDate !== this.product.creationDate){
+            
+                if(this.selectState != this.product.state && !this.showDialog && this.product.creator.username == this.userLogged){
+                    this.showDialog = true
+                }else{
+                    typeof(this.selectSupplier) != 'object' 
+                    ? this.supplier = await getSupplier(this.selectSupplier).then(res => { return res }) : this.supplier = {}
+                    typeof(this.selectPriceReduction) != 'object' 
+                    ? this.priceReduction = await getPriceReduction(this.selectPriceReduction).then(res => { return res }) : this.priceReduction = {}
+                    await updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, this.supplier, 
+                        this.priceReduction, this.creationDate, this.product.creator, this.reasonSelected)
                         .then(res => {
                             this.updated = res;
                             this.showDialog = false;
                         })
-            : this.dialog = true;
+                }
+            }else this.dialog = true;
         },
         cancelEdit(){
             router.go(-1);
