@@ -11,6 +11,9 @@
                 <p class="text--primary">Precio: {{ product.price }}€</p>
                 <p class="text--primary">State: {{ currentState }}</p>
                 <p class="text--primary">Creation date: {{ product.creationDate }}</p>
+                <p class="text--primary">Suppliers: {{ suppliers }}</p>
+                <p class="text--primary">Price reductions: {{ priceReductions }}</p>
+                <p class="text--primary">Creation date: {{ product.creationDate }}</p>
                 <p class="text--primary">Created by: <b>{{ product && product.creator && product.creator.username }}</b></p>
                 <p class="text--primary" :hidden="!discontinued">Discontinued by: <b>{{ product.comment }}</b></p>
             </v-card-text>
@@ -70,6 +73,16 @@ export default {
         },
         backToPrincipalPage(){
             router.go(-1);
+        }
+    },
+    computed:{
+        suppliers(){
+            return this.product.suppliers && Object.keys(this.product.suppliers).length 
+            ? this.product.suppliers : 'NO_SUPPLIERS'
+        },
+        priceReductions(){
+            return this.product.priceReductions && Object.keys(this.product.priceReductions).length 
+            ? this.product.priceReductions : 'NO_PRICE_REDUCTIONS'
         }
     }
 }
