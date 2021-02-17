@@ -1,27 +1,16 @@
-import getPriceReduction from '../services/getPriceReduction'
-import getSupplier from '../services/getSupplier'
-import auth from '../auth/auth.services'
-
 const SERVER_URL = "http://localhost:8086/api/products"
-let productCreated = {}
-let priceReductionSelected = {}
-let supplierSelected = {}
 
-export default function createProduct(code, description, price, state, supplier_id, priceReduction_id, creationDate){
-    let user = auth.getUserLogged();
-    user.products = [];
-
-    productCreated = {
+export default function createProduct(code, description, price, selectState, supplier, priceReduction, creationDate, user){
+    let productCreated = {
         code: code,
         description: description,
         price: price,
-        state: state,
-        suppliers: supplier_id === null ? {} : getSupplierById(supplier_id),
-        priceReductions: priceReduction_id === null ? {} : getPriceReductionById(priceReduction_id),
+        state: selectState,
+        suppliers: supplier,
+        priceReductions: priceReduction,
         creationDate: creationDate,
         creator: user
     }
-    
     return fetch(SERVER_URL, {
         method: 'POST',
         headers: {
@@ -34,24 +23,4 @@ export default function createProduct(code, description, price, state, supplier_
     })
     .then(() => { return true })
     .catch(err => { throw err })
-}
-
-function getPriceReductionById(priceReduction_id){
-    return getPriceReduction(priceReduction_id).then(res => { return res })
-    .then(res => {
-        priceReductionSelected.idpricereduction = res.idpricereduction;
-        priceReductionSelected.discount = res.discount;
-        priceReductionSelected.startDate = res.startDate;
-        priceReductionSelected.endDate = res.endDate;
-        priceReductionSelected.products = res.products
-    });
-}
-
-function getSupplierById(supplier_id) {
-    getSupplier(supplier_id).then(res =>  { return res })
-    .then(res => {
-        supplierSelected.idsupplier = res.idsupplier;
-        supplierSelected.supplierName = res.supplierName;
-        supplierSelected.supplierCountry = res.supplierCountry;
-    });
 }
