@@ -10,8 +10,8 @@ export default function updateProductSelected(idproduct, code, description, pric
         description: description,
         price: price,
         state: selectState,
-        suppliers: supplier,
-        priceReductions: priceReduction,
+        suppliers: [supplier],
+        priceReductions: [priceReduction],
         creationDate: dateToOriginFormat,
         creator: creator,
         comment: reason
