@@ -155,9 +155,9 @@ export default {
                     this.showDialog = true
                 }else{
                     typeof(this.selectSupplier) != 'object' 
-                    ? this.supplier = await getSupplier(this.selectSupplier).then(res => { return res }) : this.supplier = {}
+                    ? this.supplier = await getSupplier(this.selectSupplier).then(res => { return res }) : this.supplier = null
                     typeof(this.selectPriceReduction) != 'object' 
-                    ? this.priceReduction = await getPriceReduction(this.selectPriceReduction).then(res => { return res }) : this.priceReduction = {}
+                    ? this.priceReduction = await getPriceReduction(this.selectPriceReduction).then(res => { return res }) : this.priceReduction = null
                     await updateProductSelected(this.idproduct, this.code, this.description, this.price, this.selectState, this.supplier, 
                         this.priceReduction, this.creationDate, this.product.creator, this.reasonSelected)
                         .then(res => {
